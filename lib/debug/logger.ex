@@ -1,5 +1,6 @@
 defmodule ElixirDetective.Debug.Logger do
   require Logger
+  
   @colors %{
     defmodule: :cyan,
     alias: :green,
