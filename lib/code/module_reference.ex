@@ -1,9 +1,10 @@
 defmodule ElixirDetective.Code.ModuleReference do
   defstruct [
+    :reference_type,
     :file_path,
     :line,
     :from,
-    :to,
+    :to
   ]
 
   def build(attrs) do

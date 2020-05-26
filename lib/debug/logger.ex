@@ -1,27 +1,27 @@
 defmodule ElixirDetective.Debug.Logger do
   require Logger
-  
+
   @colors %{
     defmodule: :cyan,
     alias: :green,
     import: :green,
     unknown: :magenta,
-    block: :yellow,
+    do: :yellow,
     dead_end: :blue
   }
-  
+
   def defmodule_node(node, module_name) do
-    log_node(:defmodule, "[Node] Defmodule node - Module: \"#{module_name}\"")
+    log_node(:defmodule, "[Node] Defmodule node - Module: \"#{join(module_name)}\"")
     log_node(:defmodule, format(node))
   end
 
   def alias_node(node, module_name) do
-    log_node(:alias, "[Node] Alias node - Module: \"#{module_name}\"")
+    log_node(:alias, "[Node] Alias node - Module: \"#{join(module_name)}\"")
     log_node(:alias, format(node))
   end
-  
+
   def import_node(node, module_name) do
-    log_node(:import, "[Node] Import node - Module: \"#{module_name}\"")
+    log_node(:import, "[Node] Import node - Module: \"#{join(module_name)}\"")
     log_node(:import, format(node))
   end
 
@@ -30,12 +30,12 @@ defmodule ElixirDetective.Debug.Logger do
     log_node(:unknown, format(node))
   end
 
-  def block_node(node) do
-    log_node(:block, "[Node] Block node")
-    log_node(:block, format(node))
+  def do_node(node) do
+    log_node(:do, "[Node] Do node")
+    log_node(:do, format(node))
   end
 
-  def dead_end_node(node) do 
+  def dead_end_node(node) do
     log_node(:dead_end, "[Node] Dead-end node")
     log_node(:dead_end, format(node))
   end
@@ -48,4 +48,6 @@ defmodule ElixirDetective.Debug.Logger do
     formatted_data = inspect(data, pretty: true, limit: 10)
     "#{formatted_data}\n"
   end
+
+  defp join(list), do: Enum.join(list, ".")
 end
