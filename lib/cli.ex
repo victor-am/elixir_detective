@@ -22,12 +22,8 @@ defmodule ElixirDetective.CLI do
     option(:verboose, help: "outputs the whole AST navigation process")
 
     run context do
-      directory = context.directory
-      {:ok, code} = File.read(directory)
-      {:ok, ast} = Code.string_to_quoted(code)
-
       IO.puts("Starting analysis...")
-      result = ElixirDetective.Code.find_module_references(ast)
+      result = ElixirDetective.Code.analyze(context.directory)
       IO.puts("Dependencies found: #{inspect(result, pretty: true)}")
     end
   end
