@@ -1,5 +1,6 @@
 defmodule ElixirDetective.CLI do
   use ExCLI.DSL
+  alias ElixirDetective.{Code, CodeMap, UI}
 
   name("elixir_detective")
   description("Elixir Detective ~ Investigating your code dependencies")
@@ -23,8 +24,13 @@ defmodule ElixirDetective.CLI do
 
     run context do
       IO.puts("Starting analysis...")
-      result = ElixirDetective.Code.analyze(context.directory)
-      IO.puts("Dependencies found: #{inspect(result, pretty: true)}")
+
+      context.directory
+      |> Code.find_references()
+      |> CodeMap.generate()
+      |> UI.build()
+
+      IO.puts("Finished!")
     end
   end
 end

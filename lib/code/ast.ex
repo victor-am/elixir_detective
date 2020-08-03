@@ -8,13 +8,14 @@ defmodule ElixirDetective.Code.AST do
 
   # Defmodule node
   # When found we add pass on the module name as a namespace for next
-  # nodes found in this branch of the AST.
+  # nodes found in this branch of the AST. We also register this as a
+  # reference (to the module being declared).
   defp find({:defmodule, _metadata, args} = ast_node, namespaces) do
-    module_full_name = extract_module_name(ast_node)
-    Log.defmodule_node(ast_node, module_full_name)
+    reference = build_module_reference(:defmodule, ast_node, namespaces)
+    Log.defmodule_node(ast_node, reference.to)
 
-    new_namespaces = Enum.concat(namespaces, module_full_name)
-    continue(args, new_namespaces)
+    new_namespaces = Enum.concat(namespaces, reference.to)
+    concat_reference_and_continue(args, [reference], new_namespaces)
   end
 
   # Import node
@@ -36,7 +37,7 @@ defmodule ElixirDetective.Code.AST do
               _meta4,
               args
             }
-          ]} = ast_node,
+          ]} = _ast_node,
          namespaces
        )
        when is_list(args) do
