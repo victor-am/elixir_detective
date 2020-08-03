@@ -80,7 +80,7 @@ defmodule ElixirDetective.Code.AST do
     []
   end
 
-  defp extract_module_name({_token, _meta1, [{:__aliases__, _meta2, module_names}, [do: _block]]}),
+  defp extract_module_name({_token, _meta1, [{:__aliases__, _meta2, module_names}, _params]}),
     do: module_names
 
   defp extract_module_name({_token, _meta1, [{:__aliases__, _meta2, module_names}]}),

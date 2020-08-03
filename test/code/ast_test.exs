@@ -79,6 +79,22 @@ defmodule ElixirDetective.Code.ASTTest do
 
       assert Enum.member?(result, expected_module_reference)
     end
+
+    test "it finds imports with options" do
+      {:ok, ast} = load_fixture_code("import_example")
+
+      expected_module_reference = %ModuleReference{
+        reference_type: :import,
+        file_path: "to be implemented",
+        line: 3,
+        from: [:SimpleModule],
+        to: [:YetAnotherModule]
+      }
+
+      result = AST.find_module_references(ast)
+
+      assert Enum.member?(result, expected_module_reference)
+    end
   end
 
   defp load_fixture_code(fixture_name) do
