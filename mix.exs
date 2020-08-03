@@ -19,13 +19,14 @@ defmodule ElixirDetective.MixProject do
 
   def application do
     [
-      extra_applications: [:logger]
+      extra_applications: [:logger, :eex]
     ]
   end
 
   defp deps do
     [
-      {:ex_cli, "~> 0.1.0"}
+      {:ex_cli, "~> 0.1.0"},
+      {:jason, "~> 1.2"}
     ]
   end
 end

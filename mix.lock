@@ -1,3 +1,4 @@
 %{
   "ex_cli": {:hex, :ex_cli, "0.1.6", "30f97ef0751c75863c669cf34ebb689a5a3ebf9dafd2e73739f173fbd7561a53", [:mix], [], "hexpm", "9b6e4e89f457f6805ae47a0fc0004bae804d894c85976dfd5b47330737dccf7b"},
+  "jason": {:hex, :jason, "1.2.1", "12b22825e22f468c02eb3e4b9985f3d0cb8dc40b9bd704730efa11abd2708c44", [:mix], [{:decimal, "~> 1.0", [hex: :decimal, repo: "hexpm", optional: true]}], "hexpm", "b659b8571deedf60f79c5a608e15414085fa141344e2716fbd6988a084b5f993"},
 }
