@@ -29,5 +29,7 @@ defmodule ElixirDetective.UI do
       result = EEx.eval_file(@template_file, data: data)
       File.write("./output.html", result)
     end
+  rescue
+    _ -> IO.inspect(modules)
   end
 end

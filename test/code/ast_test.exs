@@ -61,6 +61,41 @@ defmodule ElixirDetective.Code.ASTTest do
       assert Enum.member?(result, expected_module_reference1)
       assert Enum.member?(result, expected_module_reference2)
     end
+
+    test "it finds aliases using __MODULE__ keyword" do
+      {:ok, ast} = load_fixture_code("alias_example")
+
+      expected_module_reference_1 = %ModuleReference{
+        reference_type: :alias,
+        file_path: "to be implemented",
+        line: 5,
+        from: [:SimpleModule],
+        to: [:SimpleModule]
+      }
+
+      expected_module_reference_2 = %ModuleReference{
+        reference_type: :alias,
+        file_path: "to be implemented",
+        line: 6,
+        from: [:SimpleModule],
+        to: [:SimpleModule, :Module3]
+      }
+
+      #expected_module_reference_3 = %ModuleReference{
+      #  reference_type: :alias,
+      #  file_path: "to be implemented",
+      #  line: 7,
+      #  from: [:SimpleModule],
+      #  to: [:SimpleModule, :Module3]
+      #}
+
+      result = AST.find_module_references(ast)
+
+      assert Enum.member?(result, expected_module_reference_1)
+      assert Enum.member?(result, expected_module_reference_2)
+      # Not supported yet
+      # assert Enum.member?(result, expected_module_reference_3)
+    end
   end
 
   describe "when looking for imports" do

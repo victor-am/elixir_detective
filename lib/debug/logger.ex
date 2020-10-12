@@ -40,14 +40,28 @@ defmodule ElixirDetective.Debug.Logger do
     log_node(:dead_end, format(node))
   end
 
+  def warn(message) do
+    message
+    |> format(1000)
+    |> Logger.warn()
+  end
+
   defp log_node(node_type, message) do
     Logger.debug(message, ansi_color: @colors[node_type])
   end
 
-  defp format(data) do
-    formatted_data = inspect(data, pretty: true, limit: 10)
+  defp format(data), do: format(data, 10)
+
+  defp format(data, limit) do
+    formatted_data = inspect(data, pretty: true, limit: limit)
     "#{formatted_data}\n"
   end
 
-  defp join(list), do: Enum.join(list, ".")
+  defp join(list) do
+    try do
+      Enum.join(list, ".")
+    rescue
+      _ -> inspect(list)
+    end
+  end
 end

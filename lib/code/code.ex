@@ -12,9 +12,14 @@ defmodule ElixirDetective.Code do
   end
 
   defp analyze_file(file_path) do
-    {:ok, code} = File.read(file_path)
-    {:ok, ast} = Code.string_to_quoted(code)
+    {:ok, code_as_text} = File.read(file_path)
 
-    AST.find_module_references(ast)
+    case Code.string_to_quoted(code_as_text) do
+      {:ok, ast} -> AST.find_module_references(ast)
+      # Line:    the line where it failed to parse, ex: "1"
+      # Message: the error message, ex: "syntax error before:"
+      # Token:   the symbol used as reference, ex: "'<'"
+      {:error, {line, message, token}} -> raise "Couldn't parse file #{file_path}: #{message}#{token} on line #{line}"
+    end
   end
 end

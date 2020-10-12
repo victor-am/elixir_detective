@@ -1,4 +1,4 @@
 use Mix.Config
 
-config :logger, :console, level: :debug
+config :logger, :console, level: :info
 config :elixir_detective, :env, :test
