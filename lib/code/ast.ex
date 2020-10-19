@@ -63,7 +63,14 @@ defmodule ElixirDetective.Code.AST do
          namespaces
        )
        when is_list(args) do
-    continue(args, namespaces)
+    references =
+      Enum.map(args, fn arg_node ->
+        reference = build_module_reference(:alias, arg_node, namespaces, [:__MODULE__])
+        Log.alias_node(arg_node, reference.to)
+        reference
+      end)
+
+    concat_reference_and_continue(args, references, namespaces)
   end
 
   # Alias node
@@ -118,7 +125,11 @@ defmodule ElixirDetective.Code.AST do
       |> replace__MODULE__mentions(current_module)
 
     # Extra namespace is used for aliases pointing to multiple modules
-    module_full_name = Enum.concat(reference_extra_namespace, module_name)
+    module_full_name =
+      reference_extra_namespace
+      |> replace__MODULE__mentions(current_module)
+      |> Enum.concat(module_name)
+
     file_path = "to be implemented"
 
     {_token, [line: line_of_code], _args} = node
@@ -137,6 +148,7 @@ defmodule ElixirDetective.Code.AST do
   defp replace__MODULE__mentions(module_names, current_module) do
     Enum.map(module_names, fn module_name ->
       case module_name do
+        :__MODULE__ -> current_module
         {:__MODULE__, _meta, _} -> current_module
         _ -> module_name
       end

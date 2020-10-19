@@ -23,7 +23,7 @@ defmodule ElixirDetective.UI do
 
     # When using development environment it writes the data in the UI
     # folder so we can debug with the UI in dev mode.
-    if Application.get_env(:ElixirDetective, :env) == :development do
+    if Application.get_env(:ElixirDetective, :env) == :dev do
       File.write("./ui/src/data.json", data)
     else
       result = EEx.eval_file(@template_file, data: data)
