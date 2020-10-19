@@ -81,20 +81,28 @@ defmodule ElixirDetective.Code.ASTTest do
         to: [:SimpleModule, :Module3]
       }
 
-      #expected_module_reference_3 = %ModuleReference{
-      #  reference_type: :alias,
-      #  file_path: "to be implemented",
-      #  line: 7,
-      #  from: [:SimpleModule],
-      #  to: [:SimpleModule, :Module3]
-      #}
+      expected_module_reference_3 = %ModuleReference{
+        reference_type: :alias,
+        file_path: "to be implemented",
+        line: 7,
+        from: [:SimpleModule],
+        to: [:SimpleModule, :Module4]
+      }
+
+      expected_module_reference_4 = %ModuleReference{
+        reference_type: :alias,
+        file_path: "to be implemented",
+        line: 7,
+        from: [:SimpleModule],
+        to: [:SimpleModule, :Module5]
+      }
 
       result = AST.find_module_references(ast)
 
       assert Enum.member?(result, expected_module_reference_1)
       assert Enum.member?(result, expected_module_reference_2)
-      # Not supported yet
-      # assert Enum.member?(result, expected_module_reference_3)
+      assert Enum.member?(result, expected_module_reference_3)
+      assert Enum.member?(result, expected_module_reference_4)
     end
   end
 
