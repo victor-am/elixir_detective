@@ -4,6 +4,24 @@ defmodule ElixirDetective.Code.ASTTest do
 
   doctest ElixirDetective.Code.AST
 
+  describe "when looking for direct module references" do
+    test "it finds simple function calls" do
+      {:ok, ast} = load_fixture_code("function_call_example")
+
+      expected_module_reference = %ModuleReference{
+        reference_type: :function_call,
+        file_path: "to be implemented",
+        line: 2,
+        from: [:SimpleModule],
+        to: [:OtherModule]
+      }
+
+      result = AST.find_module_references(ast)
+
+      assert Enum.member?(result, expected_module_reference)
+    end
+  end
+
   describe "when looking for aliases" do
     test "it finds simple aliases" do
       {:ok, ast} = load_fixture_code("alias_example")

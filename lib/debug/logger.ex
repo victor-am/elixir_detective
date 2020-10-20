@@ -5,6 +5,7 @@ defmodule ElixirDetective.Debug.Logger do
     defmodule: :cyan,
     alias: :green,
     import: :green,
+    function_call: :green,
     unknown: :magenta,
     do: :yellow,
     dead_end: :blue
@@ -23,6 +24,11 @@ defmodule ElixirDetective.Debug.Logger do
   def import_node(node, module_name) do
     log_node(:import, "[Node] Import node - Module: \"#{join(module_name)}\"")
     log_node(:import, format(node))
+  end
+
+  def function_call_node(node, module_name) do
+    log_node(:function_call, "[Node] Function call node - Module: \"#{join(module_name)}\"")
+    log_node(:function_call, format(node))
   end
 
   def unknown_node(node) do

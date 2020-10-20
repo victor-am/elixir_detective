@@ -82,6 +82,15 @@ defmodule ElixirDetective.Code.AST do
     concat_reference_and_continue(args, [reference], namespaces)
   end
 
+  # Function call node
+  defp find({{:., _meta, args}, _meta2, args} = ast_node, namespaces) do
+    reference = build_module_reference(:function_call, ast_node, namespaces)
+    Log.function_call_node(ast_node, reference.to)
+
+    concat_reference_and_continue(args, [reference], namespaces)
+  end
+
+
   # Do node
   defp find([do: {_token, _, _args} = arg] = ast_node, namespaces) do
     Log.do_node(ast_node)
