@@ -14,8 +14,8 @@ defmodule ElixirDetective.UI do
           full_name: Enum.join(m.namespace, "."),
           namespace: m.namespace |> List.delete_at(-1) |> Enum.join("."),
           lines_of_code: m.loc,
-          dependencies: Enum.map(m.dependencies, fn ref -> Enum.join(ref.to, ".") end),
-          dependents: Enum.map(m.dependents, fn ref -> Enum.join(ref.from, ".") end),
+          dependencies: unique_list_of_dependencies(m.dependencies),
+          dependents: unique_list_of_dependents(m.dependents),
           file_path: m.file_path
         }
       end)
@@ -31,5 +31,17 @@ defmodule ElixirDetective.UI do
     end
   rescue
     _ -> IO.inspect(modules)
+  end
+
+  defp unique_list_of_dependents(references) do
+    references
+    |> Enum.map(fn ref -> Enum.join(ref.from, ".") end)
+    |> Enum.uniq()
+  end
+
+  defp unique_list_of_dependencies(references) do
+    references
+    |> Enum.map(fn ref -> Enum.join(ref.to, ".") end)
+    |> Enum.uniq()
   end
 end

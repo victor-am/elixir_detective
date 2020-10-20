@@ -10,7 +10,7 @@ defmodule ElixirDetective.CodeTest do
       file_path = "test/fixtures/alias_example.exs"
       result = Code.find_references(file_path)
 
-      assert Enum.count(result) == 9
+      assert Enum.count(result) == 8
       assert Enum.all?(result, fn i -> %ModuleReference{} = i end)
     end
 

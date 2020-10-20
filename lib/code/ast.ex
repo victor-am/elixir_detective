@@ -8,20 +8,19 @@ defmodule ElixirDetective.Code.AST do
 
   # Defmodule node
   # When found we add pass on the module name as a namespace for next
-  # nodes found in this branch of the AST. We also register this as a
-  # reference (to the module being declared).
+  # nodes found in this branch of the AST.
   defp find({:defmodule, _metadata, args} = ast_node, namespaces) do
-    reference = build_module_reference(:defmodule, ast_node, namespaces)
+    reference = build_module_reference(ast_node, namespaces)
     Log.defmodule_node(ast_node, reference.to)
 
     new_namespaces = Enum.concat(namespaces, reference.to)
-    concat_reference_and_continue(args, [reference], new_namespaces)
+    continue(args, new_namespaces)
   end
 
-  # Import node
-  defp find({:import, _metadata, args} = ast_node, namespaces) do
-    reference = build_module_reference(:import, ast_node, namespaces)
-    Log.import_node(ast_node, reference.to)
+  # Alias node
+  defp find({:__aliases__, _metadata, args} = ast_node, namespaces) do
+    reference = build_module_reference(ast_node, namespaces)
+    Log.alias_node(ast_node, reference.to)
 
     concat_reference_and_continue(args, [reference], namespaces)
   end
@@ -30,7 +29,7 @@ defmodule ElixirDetective.Code.AST do
   # Example:
   # alias Foo.{Bar, Batz}
   defp find(
-         {:alias, _meta,
+         {_token, _meta,
           [
             {
               {:., _meta2, [{:__aliases__, _meta3, alias_namespaces}, :{}]},
@@ -43,16 +42,19 @@ defmodule ElixirDetective.Code.AST do
        when is_list(args) do
     references =
       Enum.map(args, fn arg_node ->
-        reference = build_module_reference(:alias, arg_node, namespaces, alias_namespaces)
+        reference = build_module_reference(arg_node, namespaces, alias_namespaces)
         Log.alias_node(arg_node, reference.to)
         reference
       end)
 
-    concat_reference_and_continue(args, references, namespaces)
+    concat_reference_and_continue([], references, namespaces)
   end
 
+  # Alias with multiple modules node
+  # Example:
+  # alias __MODULE__.{Bar, Batz}
   defp find(
-         {:alias, _meta,
+         {_token, _meta,
           [
             {
               {:., _meta2, [{:__MODULE__, _meta3, nil}, :{}]},
@@ -65,20 +67,12 @@ defmodule ElixirDetective.Code.AST do
        when is_list(args) do
     references =
       Enum.map(args, fn arg_node ->
-        reference = build_module_reference(:alias, arg_node, namespaces, [:__MODULE__])
+        reference = build_module_reference(arg_node, namespaces, namespaces)
         Log.alias_node(arg_node, reference.to)
         reference
       end)
 
-    concat_reference_and_continue(args, references, namespaces)
-  end
-
-  # Alias node
-  defp find({:alias, _metadata, args} = ast_node, namespaces) do
-    reference = build_module_reference(:alias, ast_node, namespaces)
-    Log.alias_node(ast_node, reference.to)
-
-    concat_reference_and_continue(args, [reference], namespaces)
+    concat_reference_and_continue([], references, namespaces)
   end
 
   # Do node
@@ -118,7 +112,7 @@ defmodule ElixirDetective.Code.AST do
     [{:__MODULE__, meta2, nil}]
   end
 
-  defp build_module_reference(reference_type, node, current_module, reference_extra_namespace \\ []) do
+  defp build_module_reference(node, current_module, reference_extra_namespace \\ []) do
     module_name =
       node
       |> extract_module_name()
@@ -135,7 +129,6 @@ defmodule ElixirDetective.Code.AST do
     {_token, [line: line_of_code], _args} = node
 
     ModuleReference.build(%{
-      reference_type: reference_type,
       from: current_module,
       to: module_full_name,
       line: line_of_code,

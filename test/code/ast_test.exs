@@ -9,7 +9,6 @@ defmodule ElixirDetective.Code.ASTTest do
       {:ok, ast} = load_fixture_code("alias_example")
 
       expected_module_reference = %ModuleReference{
-        reference_type: :alias,
         file_path: "to be implemented",
         line: 2,
         from: [:SimpleModule],
@@ -25,7 +24,6 @@ defmodule ElixirDetective.Code.ASTTest do
       {:ok, ast} = load_fixture_code("alias_example")
 
       expected_module_reference = %ModuleReference{
-        reference_type: :alias,
         file_path: "to be implemented",
         line: 3,
         from: [:SimpleModule],
@@ -41,7 +39,6 @@ defmodule ElixirDetective.Code.ASTTest do
       {:ok, ast} = load_fixture_code("alias_example")
 
       expected_module_reference1 = %ModuleReference{
-        reference_type: :alias,
         file_path: "to be implemented",
         line: 4,
         from: [:SimpleModule],
@@ -49,7 +46,6 @@ defmodule ElixirDetective.Code.ASTTest do
       }
 
       expected_module_reference2 = %ModuleReference{
-        reference_type: :alias,
         file_path: "to be implemented",
         line: 4,
         from: [:SimpleModule],
@@ -66,33 +62,22 @@ defmodule ElixirDetective.Code.ASTTest do
       {:ok, ast} = load_fixture_code("alias_example")
 
       expected_module_reference_1 = %ModuleReference{
-        reference_type: :alias,
         file_path: "to be implemented",
         line: 5,
-        from: [:SimpleModule],
-        to: [:SimpleModule]
-      }
-
-      expected_module_reference_2 = %ModuleReference{
-        reference_type: :alias,
-        file_path: "to be implemented",
-        line: 6,
         from: [:SimpleModule],
         to: [:SimpleModule, :Module3]
       }
 
-      expected_module_reference_3 = %ModuleReference{
-        reference_type: :alias,
+      expected_module_reference_2 = %ModuleReference{
         file_path: "to be implemented",
-        line: 7,
+        line: 6,
         from: [:SimpleModule],
         to: [:SimpleModule, :Module4]
       }
 
-      expected_module_reference_4 = %ModuleReference{
-        reference_type: :alias,
+      expected_module_reference_3 = %ModuleReference{
         file_path: "to be implemented",
-        line: 7,
+        line: 6,
         from: [:SimpleModule],
         to: [:SimpleModule, :Module5]
       }
@@ -102,7 +87,6 @@ defmodule ElixirDetective.Code.ASTTest do
       assert Enum.member?(result, expected_module_reference_1)
       assert Enum.member?(result, expected_module_reference_2)
       assert Enum.member?(result, expected_module_reference_3)
-      assert Enum.member?(result, expected_module_reference_4)
     end
   end
 
@@ -111,7 +95,6 @@ defmodule ElixirDetective.Code.ASTTest do
       {:ok, ast} = load_fixture_code("import_example")
 
       expected_module_reference = %ModuleReference{
-        reference_type: :import,
         file_path: "to be implemented",
         line: 2,
         from: [:SimpleModule],
@@ -127,7 +110,6 @@ defmodule ElixirDetective.Code.ASTTest do
       {:ok, ast} = load_fixture_code("import_example")
 
       expected_module_reference = %ModuleReference{
-        reference_type: :import,
         file_path: "to be implemented",
         line: 3,
         from: [:SimpleModule],

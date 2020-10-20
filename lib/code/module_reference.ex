@@ -1,9 +1,8 @@
 defmodule ElixirDetective.Code.ModuleReference do
-  @derive {Jason.Encoder, only: [:reference_type, :file_path, :line, :from, :to]}
+  @derive {Jason.Encoder, only: [:file_path, :line, :from, :to]}
 
   # TODO: Add doc for each field
   defstruct [
-    :reference_type,
     :file_path,
     :line,
     :from,
