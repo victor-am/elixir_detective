@@ -7,7 +7,7 @@ defmodule ElixirDetective.Code.Files do
     # Defaults to 5KiB
     max_size: 1024 * 5,
     ignore_dot_files: true,
-    allowed_extensions: ["ex", "exs"],
+    allowed_extensions: [],
     blocked_extensions: [],
     allowed_paths: [],
     blocked_paths: []

@@ -6,23 +6,36 @@ defmodule ElixirDetective.CodeTest do
   doctest ElixirDetective.Code
 
   describe "find_references/1" do
-    test "it returns a list of references" do
-      file_path = "test/fixtures/alias_example.exs"
+    test "it returns a list of references for aliases" do
+      file_path = "test/fixtures/code_example.exs"
       result = Code.find_references(file_path)
 
-      assert Enum.count(result) == 9
-      assert Enum.all?(result, fn i -> %ModuleReference{} = i end)
-    end
-
-    test "it returns the proper error when it finds a non-quotable file" do
-      file_path = "test/fixtures/invalid_syntax_example.exs"
-
-      expected_message =
-        "Couldn't parse file #{file_path}: missing terminator: ' (for string starting at line 2) on line 4"
-
-      assert_raise RuntimeError, expected_message, fn ->
-        Code.find_references(file_path)
-      end
+      assert result == [
+               %ElixirDetective.Code.ModuleReference{
+                 file_path: "/Users/victor/Projects/elixir_detective/test/fixtures/code_example.exs",
+                 from: "MyModule",
+                 line: 7,
+                 to: "MyNamespace.YetAnotherModule"
+               },
+               %ElixirDetective.Code.ModuleReference{
+                 file_path: "/Users/victor/Projects/elixir_detective/test/fixtures/code_example.exs",
+                 from: "MyModule",
+                 line: 8,
+                 to: "OtherModule"
+               },
+               %ElixirDetective.Code.ModuleReference{
+                 file_path: "/Users/victor/Projects/elixir_detective/test/fixtures/code_example.exs",
+                 from: "MyModule",
+                 line: 9,
+                 to: "Enum"
+               },
+               %ElixirDetective.Code.ModuleReference{
+                 file_path: "/Users/victor/Projects/elixir_detective/test/fixtures/code_example.exs",
+                 from: "MyModule",
+                 line: 13,
+                 to: "MyModule.Module3"
+               }
+             ]
     end
   end
 end
