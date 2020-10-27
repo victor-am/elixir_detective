@@ -6,22 +6,49 @@ defmodule ElixirDetective.CodeMap do
     references
     |> Enum.group_by(fn reference -> reference.from end)
     |> Enum.map(fn {entity_name, dependencies} ->
-      base_reference = hd(dependencies)
+      file_path = hd(dependencies).file_path
 
-      # Remove :defmodule references to eliminate dependencies on self
-      dependencies = Enum.filter(dependencies, fn ref -> non_circular_reference?(ref) end)
-      dependents = Enum.filter(references, fn ref -> ref.to == entity_name and non_circular_reference?(ref) end)
+      dependencies =
+        dependencies
+        |> only_non_blank()
+        |> only_non_circular()
+
+      dependents =
+        references
+        |> only_to_module(entity_name)
+        |> only_non_blank()
+        |> only_non_circular()
 
       Entity.build(%{
         type: :module,
         namespace: entity_name,
         dependencies: dependencies,
         dependents: dependents,
-        file_path: base_reference.file_path,
+        file_path: file_path,
         loc: 0
       })
     end)
   end
 
-  defp non_circular_reference?(%ModuleReference{to: to, from: from}), do: to != from
+  defp only_to_module(references, module) do
+    Enum.filter(references, fn ref ->
+      ref.to == module
+    end)
+  end
+
+  defp only_non_circular(references) do
+    Enum.filter(references, fn ref ->
+      ref.to != ref.from
+    end)
+  end
+
+  defp only_non_blank(references) do
+    Enum.filter(references, fn ref ->
+      case ref do
+        %ModuleReference{to: [], from: _} -> false
+        %ModuleReference{to: _, from: []} -> false
+        _ -> true
+      end
+    end)
+  end
 end
