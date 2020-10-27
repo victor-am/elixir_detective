@@ -21,6 +21,8 @@ defmodule ElixirDetective.UI do
       end)
       |> Jason.encode!()
 
+    IO.puts(data)
+
     # When using development environment it writes the data in the UI
     # folder so we can debug with the UI in dev mode.
     if Application.get_env(:ElixirDetective, :env) == :dev do

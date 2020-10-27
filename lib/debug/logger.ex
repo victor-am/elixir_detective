@@ -3,10 +3,12 @@ defmodule ElixirDetective.Debug.Logger do
 
   @colors %{
     defmodule: :cyan,
-    alias: :green,
-    import: :green,
+    reference: :green,
+    alias: :red,
     unknown: :magenta,
     do: :yellow,
+    block: :yellow,
+    call: :yellow,
     dead_end: :blue
   }
 
@@ -15,14 +17,14 @@ defmodule ElixirDetective.Debug.Logger do
     log_node(:defmodule, format(node))
   end
 
-  def alias_node(node, module_name) do
-    log_node(:alias, "[Node] Alias node - Module: \"#{join(module_name)}\"")
-    log_node(:alias, format(node))
+  def reference_node(node, module_name) do
+    log_node(:reference, "[Node] Reference node - Module: \"#{join(module_name)}\"")
+    log_node(:reference, format(node))
   end
 
-  def import_node(node, module_name) do
-    log_node(:import, "[Node] Import node - Module: \"#{join(module_name)}\"")
-    log_node(:import, format(node))
+  def alias_node(node) do
+    log_node(:alias, "[Node] Alias node")
+    log_node(:alias, format(node))
   end
 
   def unknown_node(node) do
@@ -32,6 +34,16 @@ defmodule ElixirDetective.Debug.Logger do
 
   def do_node(node) do
     log_node(:do, "[Node] Do node")
+    log_node(:do, format(node))
+  end
+
+  def block_node(node) do
+    log_node(:do, "[Node] Block node")
+    log_node(:do, format(node))
+  end
+
+  def call_node(node) do
+    log_node(:do, "[Node] Call node")
     log_node(:do, format(node))
   end
 

@@ -35,6 +35,21 @@ defmodule ElixirDetective.Code.ASTTest do
       assert Enum.member?(result, expected_module_reference)
     end
 
+    test "it finds the correct dependency for aliased module accesses" do
+      {:ok, ast} = load_fixture_code("alias_example")
+
+      expected_module_reference = %ModuleReference{
+        file_path: "alias_example.exs",
+        line: 9,
+        from: [:SimpleModule],
+        to: [:MyNamespace, :Module1, :Module6]
+      }
+
+      result = AST.find_module_references(ast, "alias_example.exs")
+
+      assert Enum.member?(result, expected_module_reference)
+    end
+
     test "it finds aliases pointing to multiple modules" do
       {:ok, ast} = load_fixture_code("alias_example")
 

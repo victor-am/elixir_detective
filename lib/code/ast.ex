@@ -18,14 +18,21 @@ defmodule ElixirDetective.Code.AST do
   end
 
   # Alias node
+  defp find({:alias, _metadata, args} = ast_node, namespaces, file_path) do
+    Log.alias_node(ast_node)
+
+    continue(args, namespaces, file_path)
+  end
+
+  # Reference node
   defp find({:__aliases__, _metadata, args} = ast_node, namespaces, file_path) do
     reference = build_module_reference(ast_node, namespaces, file_path)
-    Log.alias_node(ast_node, reference.to)
+    Log.reference_node(ast_node, reference.to)
 
     concat_reference_and_continue(args, [reference], namespaces, file_path)
   end
 
-  # Alias with multiple modules node
+  # Reference with multiple modules node
   # Example:
   # alias Foo.{Bar, Batz}
   defp find(
@@ -44,14 +51,14 @@ defmodule ElixirDetective.Code.AST do
     references =
       Enum.map(args, fn arg_node ->
         reference = build_module_reference(arg_node, namespaces, file_path, alias_namespaces)
-        Log.alias_node(arg_node, reference.to)
+        Log.reference_node(arg_node, reference.to)
         reference
       end)
 
     concat_reference_and_continue([], references, namespaces, file_path)
   end
 
-  # Alias with multiple modules node
+  # Reference with multiple modules node
   # Example:
   # alias __MODULE__.{Bar, Batz}
   defp find(
@@ -70,7 +77,7 @@ defmodule ElixirDetective.Code.AST do
     references =
       Enum.map(args, fn arg_node ->
         reference = build_module_reference(arg_node, namespaces, file_path, namespaces)
-        Log.alias_node(arg_node, reference.to)
+        Log.reference_node(arg_node, reference.to)
         reference
       end)
 
@@ -82,6 +89,20 @@ defmodule ElixirDetective.Code.AST do
     Log.do_node(ast_node)
 
     continue([arg], namespaces, file_path)
+  end
+
+  # Block node
+  defp find({:__block__, _meta, args} = ast_node, namespaces, file_path) do
+    Log.block_node(ast_node)
+
+    continue(args, namespaces, file_path)
+  end
+
+  # Call node
+  defp find({{:., _meta1, args1}, _meta2, args2} = ast_node, namespaces, file_path) do
+    Log.call_node(ast_node)
+
+    continue(args1 ++ [args2], namespaces, file_path)
   end
 
   # Unknown node
